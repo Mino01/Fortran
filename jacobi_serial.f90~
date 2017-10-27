@@ -1,0 +1,97 @@
+    program jacobi_serial
+!------------------------------------------------------------------------------------
+!   AUTHOR: MARTIN A. OLSSON 
+!   LAST MODIFIED:  09 MAY 2017
+!   DESCRIPTION:
+! 
+!   Solves the PDE d2U/dx2 + d2U/dy2 + cx*du/dx + cy*du/dy = 0 
+!   using Jacobi iteration on a grid.
+!
+!   For boundary conditions, see subroutine init_field in module jacobiutils.
+!------------------------------------------------------------------------------------
+!-----------------------------------------------
+!   M o d u l e s
+!-----------------------------------------------
+    use jacobiutils, only : write_params, write_binary_inputfile, jacobi_step
+!-----------------------------------------------
+!   I n t e r f a c e   B l o c k s
+!-----------------------------------------------
+    implicit none
+!-----------------------------------------------
+!   D u m m y   A r g u m e n t s
+!-----------------------------------------------
+
+!-----------------------------------------------
+!   L o c a l   P a r a m e t e r s
+!-----------------------------------------------
+
+!-----------------------------------------------
+!   L o c a l   V a r i a b l e s
+!-----------------------------------------------
+	integer :: nx 
+	integer :: ny
+	integer :: i,j,iterations
+    double precision, dimension ( : , : ) , allocatable :: u0, u1  
+    double precision :: cx  
+    double precision :: cy 
+    double precision :: interior_value 
+	integer :: num_iters
+!----------------------------------------------- 
+
+    call read_params( nx, ny, cx, cy, numIters )
+    
+    allocate( u1( nx+2, ny+2 ) )
+	allocate( u0( nx+2, ny+2 ) ) 
+  
+    !debug parameters 
+	write(*,*) "PARAMETERS ARE:"
+	write(*,*) "NX:", nx
+	write(*,*) "NY:", ny
+	write(*,*) "CX:", cx
+	write(*,*) "CY:", cy
+	write(*,*) "NUMITERS:", num_iters
+
+    call read_binary_inputfile(nx,ny,u0,'binary.dat')
+
+    write(*,'( a )') "DEBUG: u0 after binary.dat read" 
+    write(*,'( f6.2 )') u0
+
+    !debug dimensions of u(x,y) 
+    write(*,'( a )') "DEBUG: dimensions of u(x,y); before jacobi step"
+    write(*,*) "Size of u0 is: ", shape(u0) 
+ 
+!
+! START JACOBI ALGORITM           
+!
+
+     do iterations=1,num_iters
+
+          call jacobi_step( nx, ny, cx, cy, u0)
+
+     end do
+!
+! END JACOBI ALGORITHM
+!     
+     
+!
+! debug u(x,y) after jacobi step
+!    
+    write(*,'(a)') "DEBUG: u(x,y) after jacobi step"
+    write(*,'(f6.2)') u0
+
+!
+! debug dimensions of u(x,y)
+!
+
+    print*, "DEBUG: dimensions of u(x,y); after jacobi step"
+    write(*,*) "Size of u0 is: ", shape(u0) 
+      
+    call write_binary_inputfile(nx,ny,u0,'jacobi.dat')
+
+end program 
+
+
+
+
+
+

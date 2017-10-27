@@ -1,0 +1,17 @@
+
+# SERIAL SOLUTION 
+
+1) Run the file 1-clean-run.sh 
+
+./1-clean-run.sh 
+
+2) Run the file 2-configure.sh to compile and build 
+   the project. 
+
+./2-configure.sh 
+
+3) Run the file 3-jacobi_gui.py 
+
+./3-jacobi_gui.py
+
+ 
